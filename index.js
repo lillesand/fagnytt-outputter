@@ -1,4 +1,5 @@
 const Airtable = require('airtable');
+const markdown = require('./src/formatter/markdown');
 
 const key = process.env.key;
 
@@ -9,6 +10,7 @@ if (key == null) {
 }
 
 const base = new Airtable({apiKey: key}).base('appVsxAAJW4qRusNS');
+
 const TO_DATE = '2017-11-1';
 const FROM_DATE = '2017-10-1';
 
@@ -20,15 +22,19 @@ base('Bidrag').select({
     filterByFormula: `AND(IS_BEFORE({Dato}, '${TO_DATE}'), IS_AFTER({Dato}, '${FROM_DATE}'))`,
 }).eachPage(function page(records, fetchNextPage) {
 
-    let bidrag = records.map((record) => {
+    let alleBidrag = records.map((record) => {
         return {
             names: record.get('Involverte BEKKere'),
             title: record.get('Tittel'),
-            date: record.get('Dato')
+            date: record.get('Dato'),
+            venue: record.get('Hvor'),
+            venueUrl: record.get('URL til Hvor'),
+            url: record.get('URL til Tittel'),
+            type: record.get('Hva'),
         }
     });
 
-    console.log(bidrag);
+    console.log(alleBidrag.map(bidrag => `  * ${markdown.bidragRow(bidrag)}`).join('\n'));
 
     // To fetch the next page of records, call `fetchNextPage`.
     // If there are more records, `page` will get called again.
