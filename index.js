@@ -5,7 +5,7 @@ const markdown = require('./src/formatter/markdown');
 const key = process.env.key;
 
 if (key == null) {
-    console.error('key må være satt i environment. Typisk kjør scriptet med \n' +
+    console.error('key må være satt i environment. API-key finner du på https://airtable.com/account. Kjør scriptet med \n' +
         'key=nokkel node index.js');
     return;
 }
