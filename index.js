@@ -1,4 +1,5 @@
 const Airtable = require('airtable');
+const moment = require('moment');
 const markdown = require('./src/formatter/markdown');
 
 const key = process.env.key;
@@ -11,8 +12,8 @@ if (key == null) {
 
 const base = new Airtable({apiKey: key}).base('appVsxAAJW4qRusNS');
 
-const TO_DATE = '2017-11-1';
-const FROM_DATE = '2017-10-1';
+const FROM_DATE = '2017-9-10';
+const TO_DATE = '2018-1-1';
 
 
 base('Bidrag').select({
@@ -26,11 +27,11 @@ base('Bidrag').select({
         return {
             names: record.get('Involverte BEKKere'),
             title: record.get('Tittel'),
-            date: record.get('Dato'),
             venue: record.get('Hvor'),
             venueUrl: record.get('URL til Hvor'),
             url: record.get('URL til Tittel'),
             type: record.get('Hva'),
+            date: moment(record.get('Dato')),
         }
     });
 
