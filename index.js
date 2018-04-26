@@ -12,8 +12,8 @@ if (key == null) {
 
 const base = new Airtable({apiKey: key}).base('appVsxAAJW4qRusNS');
 
-const FROM_DATE = '2017-9-10';
-const TO_DATE = '2018-1-1';
+const FROM_DATE = '2018-1-1';
+const TO_DATE = '2018-4-22';
 
 
 base('Bidrag').select({
