@@ -1,6 +1,7 @@
 const Airtable = require('airtable');
 const moment = require('moment');
 const markdown = require('./src/formatter/markdown');
+const BidragGrouper = require('./src/formatter/bidrag-grouper');
 
 const key = process.env.key;
 
@@ -14,16 +15,18 @@ const base = new Airtable({apiKey: key}).base('appVsxAAJW4qRusNS');
 
 const FROM_DATE = '2018-1-1';
 const TO_DATE = '2018-4-22';
+const PAGE_SIZE = 100;
 
+let bidragGrouper = new BidragGrouper();
 
 base('Bidrag').select({
-    maxRecords: 100,
+    maxRecords: PAGE_SIZE,
     view: "Alle registrerte bidrag",
     sort: [{field: 'Dato', direction: 'asc'}],
     filterByFormula: `AND(IS_BEFORE({Dato}, '${TO_DATE}'), IS_AFTER({Dato}, '${FROM_DATE}'))`,
 }).eachPage(function page(records, fetchNextPage) {
 
-    let alleBidrag = records.map((record) => {
+    let bidragInPage = records.map((record) => {
         return {
             names: record.get('Involverte BEKKere'),
             title: record.get('Tittel'),
@@ -35,13 +38,12 @@ base('Bidrag').select({
         }
     });
 
-    console.log(alleBidrag.map(bidrag => `  * ${markdown.bidragRow(bidrag)}`).join('\n'));
-
-    // To fetch the next page of records, call `fetchNextPage`.
-    // If there are more records, `page` will get called again.
-    // If there are no more records, `done` will get called.
+    bidragInPage.forEach(bidrag => bidragGrouper.add(bidrag));
+    if (bidragInPage.length < PAGE_SIZE) {
+        bidragGrouper.print();
+    }
+    
     fetchNextPage();
-
 }, function done(err) {
     if (err) { console.error(err); }
 });

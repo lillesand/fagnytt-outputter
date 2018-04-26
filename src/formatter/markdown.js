@@ -19,13 +19,18 @@ const typeMappings = {
 };
 
 function bidragRow(details) {
-    let title = details.url !== undefined ? `[${details.title}](${details.url}` : details.title;
-    let venue = details.venueUrl !== undefined ? `[${details.venue}](${details.venueUrl})` : details.venue;
+    const title = details.url !== undefined ? `[${details.title}](${details.url}` : details.title;
+    const venue = details.venueUrl !== undefined ? `[${details.venue}](${details.venueUrl})` : details.venue;
+    
 
-    return `${details.date.format('D.MMMM')} – **${details.names}** ${typeMappings[details.type]} ${title} på ${venue}`;
+    return `  * ${details.date.format('D.MMMM')} – **${details.names}** ${typeMappings[details.type]} ${title} på ${venue}`;
+}
+
+function h2(text) {
+    return `## ${text}\n`;
 }
 
 
 module.exports = {
-    bidragRow
+    bidragRow, h2
 };
